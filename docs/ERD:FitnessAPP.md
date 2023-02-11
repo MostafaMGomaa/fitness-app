@@ -2,8 +2,11 @@
 
 ## Storage
 
-We 'll use a docment database (mongoDB).
-We 'll host db at mongo atlas.
+We'll use a relational database (schema follows).
+
+Data will be stored on the server on a separate, backed
+up volume for resilience. There will be no replication or sharding of data at
+this early stage.
 
 ### Schema
 
@@ -13,6 +16,7 @@ the Service
 **User**:
 | Attribute | Type |
 |-----------|------|
+| ID | STRING/UUID |
 | Name | String|
 | Email | String |
 | Photo | String |
@@ -31,9 +35,9 @@ user can filter data via query string.
 
 **WE WILL USE**
 
-- Node.js for implementing server .
+- Node.js is selected for implementing the server for speed of development.
 - Express.js is the web server framework.
-- Mongoose ODM.
+- Sequelize to be used as an ORM.
 
 ### Auth
 
@@ -44,23 +48,27 @@ encrypted and stored in the database.
 
 **Auth**:
 
-```
-/signup                     [POST]
-/login                      [POST]
-/logout                     [GET]
-/forgetpassword             [POST]
-/resetpassword/:token       [PATCH]
-/updatepassword             [PATCH]
+````
+/api/v1//signup                     [POST]
+/api/v1//login                      [POST]
+/api/v1//logout                     [GET]
+/api/v1//forgetpassword             [POST]
+/api/v1//resetpassword/:token       [PATCH]
+/api/v1//updatepassword             [PATCH]
 ```
 
 **USERS**:
 
 ```
-users/                      [GET]
-users/:id                   [GET]
-users/me                    [GET]
-users/deleteMe              [DELETE]
-users/updateMyPassword      [PATCH]
-users/updateUserData        [PATCH]
+/api/v1/users/                      [GET]
+/api/v1/users/:id                   [GET]
+/api/v1/users/me                    [GET]
+/api/v1/users/deleteMe              [DELETE]
+/api/v1/users/updateMyPassword      [PATCH]
+/api/v1/users/updateUserData        [PATCH]
 
-```
+````
+
+## Hosting
+
+The code will be hosted on Github, PRs and issues welcome.
