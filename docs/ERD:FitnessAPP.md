@@ -3,6 +3,7 @@
 ## Storage
 
 We'll use a relational database (schema follows).
+we 'll use postgresql
 
 Data will be stored on the server on a separate, backed
 up volume for resilience. There will be no replication or sharding of data at
@@ -48,16 +49,17 @@ encrypted and stored in the database.
 
 **Auth**:
 
-````
+```
 /api/v1//signup                     [POST]
 /api/v1//login                      [POST]
 /api/v1//logout                     [GET]
 /api/v1//forgetpassword             [POST]
 /api/v1//resetpassword/:token       [PATCH]
 /api/v1//updatepassword             [PATCH]
+
 ```
 
-**USERS**:
+**Users**:
 
 ```
 /api/v1/users/                      [GET]
@@ -66,8 +68,11 @@ encrypted and stored in the database.
 /api/v1/users/deleteMe              [DELETE]
 /api/v1/users/updateMyPassword      [PATCH]
 /api/v1/users/updateUserData        [PATCH]
+```
 
-````
+## Clients
+
+We'll start with a mobile clients, possibly adding web clients later.
 
 ## Hosting
 
