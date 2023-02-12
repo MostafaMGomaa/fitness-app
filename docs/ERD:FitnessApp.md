@@ -1,5 +1,7 @@
 # ERD: Fitness App
 
+Fitness App about making groups between people and athletics to motivate them for doing sports like running challenges and swimming .. etc
+
 ## Storage
 
 We'll use a relational database (schema follows).
