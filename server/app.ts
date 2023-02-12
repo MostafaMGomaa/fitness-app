@@ -4,6 +4,7 @@ import express, {
   Response,
   NextFunction,
 } from 'express';
+
 import morgan from 'morgan';
 
 import { userRoutes } from './routes/userRoutes';
@@ -27,7 +28,7 @@ const errHandler: ErrorRequestHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  console.error('Uncaught exception', err);
+  console.error('Hi, Uncaught exception', err);
   return res
     .status(500)
     .send('Un expected error occurred, please try agian later');

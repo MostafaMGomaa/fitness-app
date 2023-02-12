@@ -20,16 +20,34 @@ the Service
 | Attribute | Type |
 |-----------|------|
 | ID | STRING/UUID |
-| Name | String|
-| Email | String |
-| Photo | String |
-| Role | String |
-| Password | String|  
-| PasswordConfirm| String|  
-| PasswordChangedAt | Date |
-| PasswordResetToken | String |
-| PasswordResetExpires | Date |
-| Active | Boolean |
+| Name | STRING|
+| Email | STRING |
+| Photo | STRING |
+| Role | STRING |
+| Password | STRING|  
+| PasswordConfirm| STRING|  
+| PasswordChangedAt | DATE |
+| PasswordResetToken | STRING |
+| PasswordResetExpires | DATE |
+| Active | BOOLEAN |
+
+**Room**:
+| Attribute | Type |
+|-----------|------|
+| ID | STRING/UUID |
+| Title | STRING|
+| Type | STRING |
+| Photo | STRING |
+| Members | [ USER_ID ] |
+| Message | [ Meassge_ID ]|
+
+**Message**
+| Attribute | Type |
+|-----------|------|
+| ID | STRING/UUID |
+| Sender | USER_ID |
+| Caption | STRING |
+| Photo | STRING |
 
 ## Server
 
@@ -64,12 +82,32 @@ encrypted and stored in the database.
 **Users**:
 
 ```
-/api/v1/users/                      [GET]
-/api/v1/users/:id                   [GET]
-/api/v1/users/me                    [GET]
-/api/v1/users/deleteMe              [DELETE]
-/api/v1/users/updateMyPassword      [PATCH]
-/api/v1/users/updateUserData        [PATCH]
+/api/v1/users/                     [GET]
+/api/v1/users/:id                  [GET]
+/api/v1/users/me                   [GET]
+/api/v1/users/deleteMe             [DELETE]
+/api/v1/users/updateMyPassword     [PATCH]
+/api/v1/users/updateUserData       [PATCH]
+```
+
+**Rooms**:
+
+```
+/api/v1/rooms           [GET]
+/api/v1/rooms           [POST]
+/api/v1/rooms/:id       [GET]
+/api/v1/rooms/:id       [PATCH]
+/api/v1/rooms/:id       [DELETE]
+```
+
+**Message**:
+
+```
+/api/v1/messages        [GET]
+/api/v1/messages        [POST]
+/api/v1/messages/:id    [GET]
+/api/v1/messages/:id    [PATCH]
+/api/v1/messages/:id    [DELETE]
 ```
 
 ## Clients
