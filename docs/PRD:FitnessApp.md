@@ -10,4 +10,4 @@ The app's landing page is a list of public rooms which users can browse without 
 each room has a title, owner, and unique key.
 User can also create their own room which could be private or public.
 [^note]:
-In those rooms, users can post photos and posts **or messages**
+In those rooms, users can post photos and or messages
