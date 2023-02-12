@@ -40,6 +40,7 @@ the Service
 | Photo | STRING |
 | Members | [ USER_ID ] |
 | Message | [ Meassge_ID ]|
+| CreatedAt | DATE |
 
 **Message**
 | Attribute | Type |
@@ -48,6 +49,7 @@ the Service
 | Sender | USER_ID |
 | Caption | STRING |
 | Photo | STRING |
+| CreatedAt | DATE |
 
 ## Server
 
