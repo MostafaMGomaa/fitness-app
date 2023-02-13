@@ -5,7 +5,7 @@ Fitness App about making groups between people and athletics to motivate them fo
 ## Storage
 
 We'll use a relational database (schema follows).
-we 'll use postgresql
+we 'll use mysql
 
 Data will be stored on the server on a separate, backed
 up volume for resilience. There will be no replication or sharding of data at
