@@ -1,23 +1,23 @@
 export const config = {
   development: {
-    username: process.env.POSTGRES_USERNAME,
-    password: process.env.POSTGRES_PASSWORD,
-    database: process.env.POSTGRES_DATABASE,
-    host: process.env.POSTGRES_HOST,
-    dialect: 'postgres',
+    username: process.env.DATABASE_USERNAME,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE,
+    host: process.env.DATABASE_HOST,
+    dialect: 'mysql',
   },
   test: {
     username: 'root',
     password: null,
     database: 'database_test',
     host: '127.0.0.1',
-    dialect: 'postgres',
+    dialect: 'mysql',
   },
   production: {
     username: 'root',
     password: null,
     database: 'database_production',
     host: '127.0.0.1',
-    dialect: 'postgres',
+    dialect: 'mysql',
   },
 };
