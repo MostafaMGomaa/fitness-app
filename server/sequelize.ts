@@ -10,6 +10,7 @@ const connection = new Sequelize({
   database: config.development.database,
   logging: false,
   models: [Users],
+  storage: ':memory:',
 });
 
 export default connection;

@@ -29,9 +29,12 @@ const errHandler: ErrorRequestHandler = (
   next: NextFunction
 ) => {
   console.error('Hi, Uncaught exception', err);
-  return res
-    .status(500)
-    .send('Un expected error occurred, please try agian later');
+  return res.status(500).json({
+    err: 'Un expected error occurred, please try agian later',
+    msg: err,
+  });
 };
+
+app.use(errHandler);
 
 export { app };

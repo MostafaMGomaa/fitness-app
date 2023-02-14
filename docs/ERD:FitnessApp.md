@@ -11,7 +11,7 @@ Data will be stored on the server on a separate, backed
 up volume for resilience. There will be no replication or sharding of data at
 this early stage.
 
-### Schema
+## Schema
 
 We 'll need at least the following documents to implement
 the Service

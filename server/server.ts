@@ -8,7 +8,13 @@ const PORT = process.env.PORT || 3000;
 
 console.log(config.development);
 
-connection.sync().then(() => console.log('DB sync succesfull'));
+(async () => {
+  try {
+    await connection.sync().then(() => console.log('DB sync succesfull'));
+  } catch (err) {
+    console.log('There was an error!', err);
+  }
+})();
 
 app.listen(PORT, () => {
   console.log(`Server is running on PORT: ${PORT}`);
