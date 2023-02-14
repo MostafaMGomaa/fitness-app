@@ -9,7 +9,6 @@ import {
   IsUUID,
   Length,
   IsEmail,
-  Equals,
   DefaultScope,
 } from 'sequelize-typescript';
 
@@ -19,7 +18,7 @@ enum userRoles {
 }
 
 @DefaultScope(() => ({
-  attributes: { exclude: ['password'] },
+  attributes: { exclude: ['passwordConfirm'] },
 }))
 @Table({
   timestamps: false,
@@ -27,7 +26,6 @@ enum userRoles {
 })
 export class Users extends Model {
   @IsUUID(4)
-  @PrimaryKey
   @Column({
     type: DataType.UUID,
     defaultValue: DataType.UUIDV4,

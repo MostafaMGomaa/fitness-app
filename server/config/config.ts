@@ -6,6 +6,10 @@ export const config = {
     host: process.env.DATABASE_HOST,
     dialect: 'mysql',
   },
+  jwt: {
+    secret: process.env.JWT_SECRET as string,
+    expires: 90,
+  },
   test: {
     username: 'root',
     password: null,

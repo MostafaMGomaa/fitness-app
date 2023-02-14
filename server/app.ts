@@ -4,23 +4,12 @@ import express, {
   Response,
   NextFunction,
 } from 'express';
-
 import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
 
 import { userRoutes } from './routes/userRoutes';
 
 const app = express();
-
-app.use(express.json());
-app.use(morgan('dev'));
-
-app.get('/healthz', (req: Request, res: Response) => {
-  res.send({
-    status: 'success',
-  });
-});
-
-app.use('/api/v1/users', userRoutes);
 
 const errHandler: ErrorRequestHandler = (
   err: Error,
@@ -34,6 +23,18 @@ const errHandler: ErrorRequestHandler = (
     msg: err,
   });
 };
+
+app.use(cookieParser());
+app.use(express.json());
+app.use(morgan('dev'));
+
+app.get('/healthz', (req: Request, res: Response) => {
+  res.send({
+    status: 'success',
+  });
+});
+
+app.use('/api/v1/users', userRoutes);
 
 app.use(errHandler);
 

@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { signup } from '../controllers/authControllers';
+import { signup, protect, login } from '../controllers/authControllers';
 import {
   createUser,
   getAllUsers,
@@ -8,8 +8,9 @@ import {
 
 const router: Router = Router();
 
-router.route('/').get(getAllUsers).post(createUser).delete(deletAll);
+router.route('/').get(protect, getAllUsers).post(createUser).delete(deletAll);
 
 router.post('/signup', signup);
+router.post('/login', login);
 
 export const userRoutes: Router = router;

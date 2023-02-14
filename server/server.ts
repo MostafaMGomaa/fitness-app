@@ -6,7 +6,7 @@ import connection from './sequelize';
 
 const PORT = process.env.PORT || 3000;
 
-console.log(config.development);
+// console.log(config.development); // remove this after you've confirmed it is working
 
 (async () => {
   try {
