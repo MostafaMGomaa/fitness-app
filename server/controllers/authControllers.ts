@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 
 import { Users } from '../models/UsersModel';
 import { config } from '../config/config';
+import { Email } from '../utils/email';
 
 async function hashPassword(plainPassword: string): Promise<string> {
   const salt = await bcryptjs.genSalt(10);
@@ -90,6 +91,10 @@ export const signup: RequestHandler = asyncHandler(
     // create User
     const newUser = await Users.create({ ...req.body });
 
+    // Send email
+    const url = `${req.protocol}://${req.get('host')}/me`;
+    await new Email(newUser, url).sendWelcome();
+
     // all right send back token with body.
     const token = generateJWT(newUser, res);
     return res.status(200).send({
@@ -133,6 +138,9 @@ export const login: RequestHandler = asyncHandler(
       });
 
     const token = generateJWT(user, res);
+
+    const url = `${req.protocol}://${req.get('host')}/me`;
+    await new Email(user, url).sendWelcome();
 
     res.status(200).json({
       status: 'sucess',

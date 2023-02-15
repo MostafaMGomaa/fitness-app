@@ -5,6 +5,12 @@ export const config = {
     database: process.env.DATABASE,
     host: process.env.DATABASE_HOST,
     dialect: 'mysql',
+    mailTrapEmail: {
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      username: process.env.EMAIL_USERNAME as string,
+      password: process.env.EMAIL_PASSWORD as string,
+    },
   },
   jwt: {
     secret: process.env.JWT_SECRET as string,
@@ -23,5 +29,9 @@ export const config = {
     database: 'database_production',
     host: '127.0.0.1',
     dialect: 'mysql',
+    sendGridEmail: {
+      username: process.env.SENDGRID_USERNAME as string,
+      password: process.env.SENDGRID_PASSWORD as string,
+    },
   },
 };
