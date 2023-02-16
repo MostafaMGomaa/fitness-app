@@ -8,9 +8,9 @@ import { Users } from '../models/UsersModel';
 export const getAllUsers: RequestHandler = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const users: Users[] = await Users.findAll({
-      attributes: {
-        exclude: ['password', 'passwordConfirm'],
-      },
+      // attributes: {
+      //   exclude: ['password', 'passwordConfirm'],
+      // },
     });
     res.status(200).json({
       message: 'success',

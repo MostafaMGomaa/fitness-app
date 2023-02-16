@@ -18,13 +18,15 @@ enum userRoles {
 }
 
 @DefaultScope(() => ({
-  attributes: { exclude: ['passwordConfirm'] },
+  // attributes: { exclude: ['passwordConfirm'] },
 }))
 @Table({
   timestamps: false,
   tableName: 'users',
 })
 export class Users extends Model {
+  @PrimaryKey
+  @Unique
   @IsUUID(4)
   @Column({
     type: DataType.UUID,

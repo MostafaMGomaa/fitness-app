@@ -1,7 +1,9 @@
 import { Users } from '../models/UsersModel';
 import { config } from '../config/config';
-
 import nodemailer from 'nodemailer';
+import sgMail from '@sendgrid/mail';
+
+sgMail.setApiKey(process.env.SENDGRID_PASSWORD);
 
 export class Email {
   to: string;
@@ -12,26 +14,12 @@ export class Email {
 
   constructor(user: Users, url: string) {
     this.to = user.email;
-    this.from = '<fitnessApp@info.com>';
+    this.from = 'gomaamostafa26@gmail.com';
     this.name = user.name;
     this.url = url;
   }
 
-  newTransport(): any {
-    if (process.env.NODE_ENV === 'producation') {
-      // return nodemail transport -> Sendgrid
-      // console.log('Prod');
-      // console.log(config.production.sendGridEmail);
-      this.transtport = nodemailer.createTransport({
-        service: 'SendGrid',
-        auth: {
-          user: config.production.sendGridEmail.username,
-          pass: config.production.sendGridEmail.password,
-        },
-      });
-      return this.transtport;
-    }
-
+  newTransport() {
     return nodemailer.createTransport({
       host: config.development.mailTrapEmail.host,
       port: Number(config.development.mailTrapEmail.port),
@@ -42,7 +30,7 @@ export class Email {
     });
   }
 
-  async send(subject: string, text: string): Promise<any> {
+  async sendDev(subject: string, text: string): Promise<any> {
     const mailOptions: object = {
       from: 'Mostafa Gomaa',
       to: this.to,
@@ -53,14 +41,41 @@ export class Email {
     return await this.newTransport().sendMail(mailOptions);
   }
 
-  async sendWelcome() {
-    return await this.send('Welcom', `Weclom ${this.name}`);
+  async sendWelcomeDev() {
+    return await this.sendDev('Welcom', `Weclom ${this.name}`).catch((err) =>
+      console.log(err)
+    );
   }
 
-  async sendResetPassword(code: string) {
-    return await this.send(
+  async sendResetPasswordDev(code: string) {
+    return await this.sendDev(
       'Your Reset password token',
       `Please make patch request to this endpoint ${this.url} and ur code is ${code}`
+    ).catch((err) => console.log(err));
+  }
+
+  send(subject: string, text: string) {
+    const msg = {
+      to: this.to,
+      from: 'gomaamostafa26@gmail.com',
+      subject,
+      text,
+    };
+
+    return sgMail.send(msg).catch((err) => {
+      console.log(err.response.body);
+    });
+  }
+
+  sendWelcome() {
+    return this.send('Welcome', `Welcome in our app`);
+  }
+
+  sendResetPaswordToken(token: string) {
+    return this.send(
+      'Rest password token',
+      `Your reset is ${token}, 
+      Your reset password token is only vaild for 10 min`
     );
   }
 }
