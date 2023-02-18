@@ -5,6 +5,7 @@ import {
   login,
   forgetPassword,
   resetPassword,
+  logout,
 } from '../controllers/authControllers';
 import {
   createUser,
@@ -18,6 +19,7 @@ router.route('/').get(protect, getAllUsers).post(createUser).delete(deletAll);
 
 router.post('/signup', signup);
 router.post('/login', login);
+router.get('/logout', logout);
 router.post('/forgotPassword', forgetPassword);
 router.patch('/resetPassword/:resetToken', resetPassword);
 

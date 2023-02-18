@@ -47,8 +47,10 @@ export function generateSendJWT(
   const token = jwt.sign(user.toJSON(), config.jwt.secret);
   const cookieOptions = {
     expires: new Date(Date.now() + config.jwt.expires * 24 * 60 * 60 * 1000),
+    httpOnly: true,
   };
-
+  user.password = null;
+  user.passwordConfirm = null;
   res.cookie('jwt', token, cookieOptions);
 
   return res.status(statusCode).json({

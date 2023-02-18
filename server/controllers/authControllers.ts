@@ -13,7 +13,6 @@ import {
   comparePasswords,
   creatResetToken,
   generateSendJWT,
-  hashPassword,
 } from '../utils/authHelpers';
 
 export const protect = asyncHandler(
@@ -85,14 +84,16 @@ export const signup: RequestHandler = asyncHandler(
 export const login: RequestHandler = asyncHandler(
   async (req: Request, res: Response): Promise<any> => {
     const { email, password } = req.body;
-
+    console.log('1');
     if (!email || !EmailValidator.validate(email) || !password)
       return res.status(400).json({
         status: 'Error',
         message: 'Please provide vaild credentails',
       });
 
-    const user = await Users.findOne({ where: { email } });
+    const user = await Users.findOne({
+      where: { email },
+    });
 
     if (!user)
       return res.status(404).json({
@@ -111,6 +112,17 @@ export const login: RequestHandler = asyncHandler(
     generateSendJWT(user, 200, res);
   }
 );
+
+export const logout: RequestHandler = (req: Request, res: Response) => {
+  const cookieOptions = {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  };
+  res.cookie('jwt', 'loggedout', cookieOptions);
+  res.status(200).json({
+    status: 'logged out',
+  });
+};
 
 export const forgetPassword: RequestHandler = asyncHandler(
   async (req: Request, res: Response): Promise<any> => {

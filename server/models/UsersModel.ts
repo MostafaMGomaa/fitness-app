@@ -73,7 +73,7 @@ export class Users extends Model {
   })
   password!: string;
 
-  @Length({ min: 8 })
+  @Length({ min: 8, msg: 'passwordConfirm must be more than 8 chars' })
   @Column({
     type: DataType.STRING,
     allowNull: false,
