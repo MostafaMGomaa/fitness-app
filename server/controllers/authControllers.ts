@@ -7,16 +7,26 @@ import crypto from 'crypto';
 import { Users } from '../models/UsersModel';
 import { config } from '../config/config';
 import { Email } from '../utils/email';
-
+import { IGetUserAuthInfoRequest } from '../custom';
 import {
   checkPasswords,
   comparePasswords,
   creatResetToken,
   generateSendJWT,
 } from '../utils/authHelpers';
+import { promisify } from 'util';
 
+// To decode jwt.
+interface UserPayload {
+  id: string;
+  iat: number;
+}
 export const protect = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+  async (
+    req: IGetUserAuthInfoRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> => {
     let token: string;
 
     if (
@@ -33,15 +43,23 @@ export const protect = asyncHandler(
         status: 'Error',
         message: 'You are not logged in! Please login for get access',
       });
+    const decoded = jwt.verify(token, config.jwt.secret) as UserPayload;
+    const currentUser = await Users.findByPk(decoded.id);
+    if (!currentUser) {
+      return res.status(404).json({
+        status: 'Error',
+        message: 'Cannot find this user in server',
+      });
+    }
+    /**
+     * @todo:
+     * If user change his password after,
+     * let user login again
+     */
 
-    return jwt.verify(token, config.jwt.secret, (err, decoded) => {
-      if (err) {
-        return res
-          .status(500)
-          .send({ auth: false, message: 'Failed to authenticate.' });
-      }
-      return next();
-    });
+    req.user = currentUser;
+    res.locals.user = currentUser;
+    next();
   }
 );
 
@@ -65,10 +83,6 @@ export const signup: RequestHandler = asyncHandler(
         .status(422)
         .json({ status: 'Error', message: 'User may already exist' });
     }
-
-    // hash the password in db
-    // const hashedPassword = await hashPassword(password);
-    // req.body.password = req.body.passwordConfirm = hashedPassword;
 
     const newUser = await Users.create(req.body);
 
@@ -120,7 +134,8 @@ export const logout: RequestHandler = (req: Request, res: Response) => {
   };
   res.cookie('jwt', 'loggedout', cookieOptions);
   res.status(200).json({
-    status: 'logged out',
+    status: 'success',
+    message: 'logged out',
   });
 };
 
@@ -157,7 +172,7 @@ export const forgetPassword: RequestHandler = asyncHandler(
     new Email(user, resetUrl).sendResetPasswordDev(resetToken);
 
     res.status(200).json({
-      status: 'Sucess',
+      status: 'success',
       message: 'Your password reset token sent to your email.',
     });
   }
@@ -197,4 +212,8 @@ export const resetPassword: RequestHandler = asyncHandler(
 
     generateSendJWT(user, 200, res);
   }
+);
+
+export const updatePassword: RequestHandler = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {}
 );

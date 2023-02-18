@@ -44,13 +44,15 @@ export function generateSendJWT(
   statusCode: number,
   res: Response
 ): Response {
+  user.password = null;
+  user.passwordConfirm = null;
+
   const token = jwt.sign(user.toJSON(), config.jwt.secret);
   const cookieOptions = {
     expires: new Date(Date.now() + config.jwt.expires * 24 * 60 * 60 * 1000),
     httpOnly: true,
   };
-  user.password = null;
-  user.passwordConfirm = null;
+
   res.cookie('jwt', token, cookieOptions);
 
   return res.status(statusCode).json({
@@ -61,4 +63,17 @@ export function generateSendJWT(
 
 export function creatResetToken(resetToken: string) {
   return crypto.createHash('sha256').update(resetToken).digest('hex');
+}
+
+export function changePasswordAfter(
+  JWTTimeStamp: number,
+  user: Users
+): boolean {
+  if (user.passwordChangedAt != null) {
+    const chagedPasswordTimestamp = Math.floor(
+      user.passwordChangedAt.getTime() / 1000
+    );
+    return chagedPasswordTimestamp > JWTTimeStamp;
+  }
+  return false;
 }
