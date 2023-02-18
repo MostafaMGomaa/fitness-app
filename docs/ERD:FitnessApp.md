@@ -37,7 +37,7 @@ the Service
 | ID | STRING/UUID |
 | Title | STRING|
 | Type | STRING |
-| Photo | STRING |
+| Cover | STRING |
 | Members | [ USER_ID ] |
 | Message | [ Meassge_ID ]|
 | CreatedAt | DATE |
@@ -78,7 +78,6 @@ encrypted and stored in the database.
 /api/v1//forgetpassword             [POST]
 /api/v1//resetpassword/:token       [PATCH]
 /api/v1//updatepassword             [PATCH]
-
 ```
 
 **Users**:

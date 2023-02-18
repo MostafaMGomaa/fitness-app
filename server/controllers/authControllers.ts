@@ -1,6 +1,5 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import asyncHandler from 'express-async-handler';
-import bcryptjs from 'bcryptjs';
 import * as EmailValidator from 'email-validator';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
@@ -9,53 +8,13 @@ import { Users } from '../models/UsersModel';
 import { config } from '../config/config';
 import { Email } from '../utils/email';
 
-async function hashPassword(plainPassword: string): Promise<string> {
-  const salt = await bcryptjs.genSalt(10);
-  const hashedPassword = await bcryptjs.hash(plainPassword, salt);
-  return hashedPassword;
-}
-
-async function comparePasswords(
-  plainTextPassword: string,
-  hash: string
-): Promise<boolean> {
-  return await bcryptjs.compare(plainTextPassword, hash);
-}
-
-function correctPasswords(
-  password: string,
-  passwordConfirm: string,
-  res: Response
-) {
-  if (password.length < 8)
-    return res.status(400).json({
-      messsage: 'Password length must be greater than 8 char',
-    });
-
-  if (password !== passwordConfirm)
-    return res.status(400).json({
-      status: 'Error',
-      messsage: 'Passwords are not the same!',
-    });
-}
-
-function generateSendJWT(
-  user: Users,
-  statusCode: number,
-  res: Response
-): Response {
-  const token = jwt.sign(user.toJSON(), config.jwt.secret);
-  const cookieOptions = {
-    expires: new Date(Date.now() + config.jwt.expires * 24 * 60 * 60 * 1000),
-  };
-
-  res.cookie('jwt', token, cookieOptions);
-
-  return res.status(statusCode).json({
-    status: 'success',
-    token,
-  });
-}
+import {
+  checkPasswords,
+  comparePasswords,
+  creatResetToken,
+  generateSendJWT,
+  hashPassword,
+} from '../utils/authHelpers';
 
 export const protect = asyncHandler(
   async (req: Request, res: Response, next: NextFunction): Promise<any> => {
@@ -88,7 +47,7 @@ export const protect = asyncHandler(
 );
 
 export const signup: RequestHandler = asyncHandler(
-  async (req: Request, res: Response): Promise<any> => {
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     const { email, password, passwordConfirm } = req.body;
 
     // validate the credentials
@@ -97,7 +56,7 @@ export const signup: RequestHandler = asyncHandler(
         messsage: 'Error, please provide vaild credentials',
       });
 
-    correctPasswords(password, passwordConfirm, res);
+    checkPasswords(password, passwordConfirm, res, next);
 
     // check that user doesnt exists
     const user = await Users.findOne({ where: { email } });
@@ -109,11 +68,10 @@ export const signup: RequestHandler = asyncHandler(
     }
 
     // hash the password in db
-    const hashedPassword = await hashPassword(password);
-    req.body.password = req.body.passwordConfirm = hashedPassword;
+    // const hashedPassword = await hashPassword(password);
+    // req.body.password = req.body.passwordConfirm = hashedPassword;
 
-    // create User
-    const newUser = await Users.create({ ...req.body });
+    const newUser = await Users.create(req.body);
 
     // Send email
     const url = `${req.protocol}://${req.get('host')}/me`;
@@ -157,7 +115,7 @@ export const login: RequestHandler = asyncHandler(
 export const forgetPassword: RequestHandler = asyncHandler(
   async (req: Request, res: Response): Promise<any> => {
     const { email } = req.body;
-
+    console.log('A');
     if (!email || !EmailValidator.validate(email))
       return res.status(400).json({
         status: 'Error',
@@ -177,11 +135,7 @@ export const forgetPassword: RequestHandler = asyncHandler(
     // Create Token and add it on db
     const resetToken = crypto.randomBytes(3).toString('hex');
 
-    user.passwordResetToken = crypto
-      .createHash('sha256')
-      .update(resetToken)
-      .digest('hex');
-
+    user.passwordResetToken = creatResetToken(resetToken);
     user.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000);
     await user.save();
 
@@ -193,23 +147,18 @@ export const forgetPassword: RequestHandler = asyncHandler(
     res.status(200).json({
       status: 'Sucess',
       message: 'Your password reset token sent to your email.',
-      user,
     });
   }
 );
 
 export const resetPassword: RequestHandler = asyncHandler(
-  async (req: Request, res: Response): Promise<any> => {
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     const { resetToken } = req.params;
     const { password, passwordConfirm } = req.body;
 
-    correctPasswords(password, passwordConfirm, res);
+    checkPasswords(password, passwordConfirm, res, next);
 
-    const hasedToken = crypto
-      .createHash('sha256')
-      .update(resetToken)
-      .digest('hex');
-
+    const hasedToken = creatResetToken(resetToken);
     const user = await Users.findOne({
       where: { passwordResetToken: hasedToken },
     });
@@ -227,14 +176,11 @@ export const resetPassword: RequestHandler = asyncHandler(
       });
 
     // update user info.
-
-    console.log(new Date(Date.now()));
-    user.password = await hashPassword(password);
-    user.passwordConfirm = await hashPassword(passwordConfirm);
+    user.password = req.body.password;
+    user.passwordConfirm = req.body.passwordConfirm;
     user.passwordChangedAt = new Date(Date.now());
     user.passwordResetToken = null;
     user.passwordResetExpires = null;
-    console.log(user.password);
     await user.save();
 
     generateSendJWT(user, 200, res);

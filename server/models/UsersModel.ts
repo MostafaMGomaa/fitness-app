@@ -10,7 +10,11 @@ import {
   Length,
   IsEmail,
   DefaultScope,
+  BeforeUpdate,
+  BeforeCreate,
 } from 'sequelize-typescript';
+
+import { hashPassword } from '../utils/authHelpers';
 
 enum userRoles {
   user = 'user',
@@ -18,7 +22,7 @@ enum userRoles {
 }
 
 @DefaultScope(() => ({
-  // attributes: { exclude: ['passwordConfirm'] },
+  attributes: { exclude: ['active'] },
 }))
 @Table({
   timestamps: false,
@@ -96,4 +100,15 @@ export class Users extends Model {
     type: DataType.BOOLEAN,
   })
   active!: Boolean;
+
+  @BeforeUpdate
+  @BeforeCreate
+  static async hashPassowordModel(instance: Users) {
+    if (instance.changed('password')) {
+      console.log('Hook');
+      instance.password = instance.passwordConfirm = await hashPassword(
+        instance.password
+      );
+    }
+  }
 }
