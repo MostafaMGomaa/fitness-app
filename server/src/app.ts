@@ -8,6 +8,7 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 
 import { userRoutes } from './routes/userRoutes';
+import { roomRoutes } from './routes/roomRoutes';
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.get('/healthz', (req: Request, res: Response) => {
 });
 
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/rooms', roomRoutes);
 
 app.use(errHandler);
 

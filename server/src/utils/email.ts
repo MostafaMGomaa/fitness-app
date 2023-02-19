@@ -51,7 +51,7 @@ export class Email {
     return await this.sendDev(
       'Your Reset password token',
       `Please make patch request to this endpoint ${this.url} and ur code is ${code}`
-    ).catch((err) => console.log(err));
+    ).catch((err) => console.error(err));
   }
 
   send(subject: string, text: string) {
@@ -63,7 +63,7 @@ export class Email {
     };
 
     return sgMail.send(msg).catch((err) => {
-      console.log(err.response.body);
+      console.error(err.response.body);
     });
   }
 

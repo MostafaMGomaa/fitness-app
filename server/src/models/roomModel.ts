@@ -43,6 +43,7 @@ export class Room extends Model<roomAttributes> {
   })
   public cover: string;
 
+  @Column({ allowNull: false })
   @ForeignKey(() => Users)
   @Column
   ownerId: string;
@@ -50,8 +51,8 @@ export class Room extends Model<roomAttributes> {
   @BelongsTo(() => Users)
   owner: Users;
 
-  @HasMany(() => Users, 'membersIds')
-  members: Users[];
+  //   @HasMany(() => Users, 'membersIds')
+  //   members: Users[];
 
   @CreatedAt
   createdAt: Date;

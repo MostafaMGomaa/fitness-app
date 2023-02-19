@@ -39,7 +39,6 @@ export const protect = asyncHandler(
       });
 
     const decoded = jwt.verify(token, config.jwt.secret) as UserPayload;
-    console.log(decoded);
     const currentUser = await Users.findByPk(decoded.id, {
       attributes: { exclude: ['password', 'passwordConfirm'] },
     });
