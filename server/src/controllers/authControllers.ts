@@ -7,20 +7,13 @@ import crypto from 'crypto';
 import { Users } from '../models/UsersModel';
 import { config } from '../config/config';
 import { Email } from '../utils/email';
-import { IGetUserAuthInfoRequest } from '../custom';
+import { IGetUserAuthInfoRequest, UserPayload } from '../types';
 import {
   checkPasswords,
   comparePasswords,
   creatResetToken,
   generateSendJWT,
-  hashPassword,
 } from '../utils/authHelpers';
-
-// To decode jwt.
-interface UserPayload {
-  id: string;
-  iat: number;
-}
 
 export const protect = asyncHandler(
   async (
@@ -46,6 +39,7 @@ export const protect = asyncHandler(
       });
 
     const decoded = jwt.verify(token, config.jwt.secret) as UserPayload;
+    console.log(decoded);
     const currentUser = await Users.findByPk(decoded.id, {
       attributes: { exclude: ['password', 'passwordConfirm'] },
     });

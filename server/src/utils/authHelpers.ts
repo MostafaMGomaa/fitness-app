@@ -47,7 +47,7 @@ export function generateSendJWT(
   user.password = null;
   user.passwordConfirm = null;
 
-  const token = jwt.sign(user.id, config.jwt.secret);
+  const token = jwt.sign({ id: user.id }, config.jwt.secret);
   const cookieOptions = {
     expires: new Date(Date.now() + config.jwt.expires * 24 * 60 * 60 * 1000),
     httpOnly: true,

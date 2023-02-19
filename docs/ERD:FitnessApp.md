@@ -38,9 +38,11 @@ the Service
 | Title | STRING|
 | Type | STRING |
 | Cover | STRING |
+| Owner | USER_ID|
 | Members | [ USER_ID ] |
 | Message | [ Meassge_ID ]|
 | CreatedAt | DATE |
+| UpdatedAt | Date|
 
 **Message**
 | Attribute | Type |

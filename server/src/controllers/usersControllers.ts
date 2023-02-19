@@ -1,7 +1,7 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import asyncHandler from 'express-async-handler';
 
-import { IGetUserAuthInfoRequest } from '../custom';
+import { IGetUserAuthInfoRequest } from '../types';
 import { Users } from '../models/UsersModel';
 
 export const getAllUsers: RequestHandler = asyncHandler(
@@ -29,7 +29,7 @@ export const createUser: RequestHandler = (req: Request, res: Response) => {
 // For dev only
 export const deletAll: RequestHandler = asyncHandler(
   async (req: Request, res: Response): Promise<any> => {
-    const newUser = await Users.destroy({
+    await Users.destroy({
       where: {},
       truncate: true,
     });

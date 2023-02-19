@@ -10,7 +10,9 @@ const PORT = process.env.PORT || 3000;
 
 (async () => {
   try {
-    await connection.sync().then(() => console.log('DB sync succesfull'));
+    await connection
+      .sync({ force: true })
+      .then(() => console.log('DB sync succesfull'));
   } catch (err) {
     console.log('There was an error!', err);
   }

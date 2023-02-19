@@ -38,7 +38,6 @@ export class Users extends Model {
   })
   public id!: string;
 
-  @PrimaryKey
   @Unique
   @IsEmail
   @Column({
