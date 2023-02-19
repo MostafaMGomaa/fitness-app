@@ -11,7 +11,7 @@ export const getAllUsers: RequestHandler = asyncHandler(
         exclude: ['password', 'passwordConfirm'],
       },
     });
-    console.log(req.user.email);
+
     res.status(200).json({
       message: 'success',
       data: { length: users.length, users },
@@ -19,15 +19,12 @@ export const getAllUsers: RequestHandler = asyncHandler(
   }
 );
 
-export const createUser: RequestHandler = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const newUser = await Users.create({ ...req.body });
-    res.status(200).json({
-      message: 'success',
-      data: { newUser },
-    });
-  }
-);
+export const createUser: RequestHandler = (req: Request, res: Response) => {
+  res.status(200).json({
+    status: 'success',
+    message: 'This endpoint no longer exists try /api/v1/signup',
+  });
+};
 
 // For dev only
 export const deletAll: RequestHandler = asyncHandler(

@@ -6,6 +6,7 @@ import {
   forgetPassword,
   resetPassword,
   logout,
+  updatePassword,
 } from '../controllers/authControllers';
 import {
   createUser,
@@ -22,5 +23,9 @@ router.post('/login', login);
 router.get('/logout', logout);
 router.post('/forgotPassword', forgetPassword);
 router.patch('/resetPassword/:resetToken', resetPassword);
+
+router.use(protect);
+
+router.patch('/updateMyPassword', updatePassword);
 
 export const userRoutes: Router = router;

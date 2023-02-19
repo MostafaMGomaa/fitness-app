@@ -13,14 +13,15 @@ import {
   comparePasswords,
   creatResetToken,
   generateSendJWT,
+  hashPassword,
 } from '../utils/authHelpers';
-import { promisify } from 'util';
 
 // To decode jwt.
 interface UserPayload {
   id: string;
   iat: number;
 }
+
 export const protect = asyncHandler(
   async (
     req: IGetUserAuthInfoRequest,
@@ -43,8 +44,12 @@ export const protect = asyncHandler(
         status: 'Error',
         message: 'You are not logged in! Please login for get access',
       });
+
     const decoded = jwt.verify(token, config.jwt.secret) as UserPayload;
-    const currentUser = await Users.findByPk(decoded.id);
+    const currentUser = await Users.findByPk(decoded.id, {
+      attributes: { exclude: ['password', 'passwordConfirm'] },
+    });
+
     if (!currentUser) {
       return res.status(404).json({
         status: 'Error',
@@ -98,7 +103,6 @@ export const signup: RequestHandler = asyncHandler(
 export const login: RequestHandler = asyncHandler(
   async (req: Request, res: Response): Promise<any> => {
     const { email, password } = req.body;
-    console.log('1');
     if (!email || !EmailValidator.validate(email) || !password)
       return res.status(400).json({
         status: 'Error',
@@ -142,7 +146,6 @@ export const logout: RequestHandler = (req: Request, res: Response) => {
 export const forgetPassword: RequestHandler = asyncHandler(
   async (req: Request, res: Response): Promise<any> => {
     const { email } = req.body;
-    console.log('A');
     if (!email || !EmailValidator.validate(email))
       return res.status(400).json({
         status: 'Error',
@@ -215,5 +218,38 @@ export const resetPassword: RequestHandler = asyncHandler(
 );
 
 export const updatePassword: RequestHandler = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction): Promise<any> => {}
+  async (
+    req: IGetUserAuthInfoRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> => {
+    const { currentPassword, newPassword, newPasswordConfirm } = req.body;
+    // Get user from req.user
+    const user: Users = await Users.findByPk(req.user.id);
+
+    // Check if current password equal password in db
+    const validPassowrds = await comparePasswords(
+      currentPassword,
+      user.password
+    );
+
+    if (!validPassowrds)
+      return res.status(401).json({
+        status: 'Error',
+        message: 'Your current password is wrong',
+      });
+
+    // Validate body.
+    checkPasswords(newPassword, newPasswordConfirm, res, next);
+
+    // Change user password
+    user.password = newPassword;
+    user.passwordConfirm = newPasswordConfirm;
+    await user.save();
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Your password successfully changed',
+    });
+  }
 );
