@@ -1,10 +1,10 @@
 const AppError = require('../utils/appError');
 
 const handleDuplicateFieldsErrorDB = (err) => {
-  // Capture the value which duplicate in error msg using Regluar expression.
-  const value = err.errmsg.match(/(["'])(?:(?=(\\?))\2.)*?\1/)[0];
+  const value = Object.keys(err.keyValue)[0];
+  console.log(value);
 
-  const message = `Duplicate field value: ${value}. Please use another one`;
+  const message = `Duplicate field value: ${value}. Please use another value!`;
   return new AppError(message, 400);
 };
 

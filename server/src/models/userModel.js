@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: ['user', 'admin'],
-      required: [true, 'Please select a role!'],
+      default: 'user',
     },
     password: {
       type: String,
@@ -120,11 +120,11 @@ userSchema.methods.createPasswordResetToken = function () {
   return resetToken;
 };
 
-userSchema.virtual('ticket', {
-  ref: 'Ticket',
-  foreignField: 'user',
-  localField: '_id',
-});
+// userSchema.virtual('ticket', {
+//   ref: 'Ticket',
+//   foreignField: 'user',
+//   localField: '_id',
+// });
 
 const User = mongoose.model('User', userSchema);
 
