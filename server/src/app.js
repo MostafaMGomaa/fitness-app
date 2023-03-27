@@ -1,28 +1,29 @@
-const express = require("express");
-const morgan = require("morgan");
-const dotenv = require("dotenv");
-const rateLimit = require("express-rate-limit");
-const helmet = require("helmet");
+const express = require('express');
+const morgan = require('morgan');
+const dotenv = require('dotenv');
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 
-const cookieParser = require("cookie-parser");
-const xss = require("xss-clean");
-const dataSanitize = require("express-mongo-sanitize");
-const hpp = require("hpp");
+const cookieParser = require('cookie-parser');
+const xss = require('xss-clean');
+const dataSanitize = require('express-mongo-sanitize');
+const hpp = require('hpp');
 
-const userRoutes = require("./routes/userRoutes");
+const userRoutes = require('./routes/userRoutes');
+const sportRoutes = require('./routes/sportRoutes');
 
-const AppError = require("./utils/appError");
-const globalErrorHandler = require("./controllers/errorControllers");
+const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/errorControllers');
 
 const app = express();
 
-dotenv.config({ path: "./config.env" });
+dotenv.config({ path: './config.env' });
 
 // Middlewares
-if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
+if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 app.use(helmet());
-app.use(express.json({ limit: "10kb" }));
+app.use(express.json({ limit: '10kb' }));
 app.use(cookieParser());
 app.use(
   rateLimit({
@@ -36,16 +37,17 @@ app.use(hpp());
 
 // Routes
 // Test server
-app.get("healthz", (req, res) => {
+app.get('healthz', (req, res) => {
   res.status(200, {
-    status: "All right",
+    status: 'All right',
   });
 });
 
-app.use("/api/v1/users", userRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/sports', sportRoutes);
 
 // Error
-app.all("*", (req, res, next) => {
+app.all('*', (req, res, next) => {
   next(new AppError(`Cannot find ${req.originalUrl} in server`, 404));
 });
 

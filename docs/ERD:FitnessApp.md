@@ -51,6 +51,17 @@ the Service
 | Photo | STRING |
 | CreatedAt | DATE |
 
+**Sports**
+| Attribute | Type |
+|-----------|------|
+| Link | SREING |
+| Name | STRING |
+| Diffculty | STRING |
+| Colories | NUMBER |
+| DESC | STRING |
+| Steps | [STRING] |
+| Photo | String |
+
 ## Server
 
 A Simple HTTP server us responsible to authentication serving stored data ,
